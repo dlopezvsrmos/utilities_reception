@@ -6,6 +6,3 @@ database = client["utilities"]
 
 properties_col = database["properties"]
 vendors_col = database["vendors"]
-
-
-

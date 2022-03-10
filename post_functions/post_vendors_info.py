@@ -2,7 +2,7 @@ import csv
 import db_structure as connection
 
 
-with open('account_list.csv') as csv_file:
+with open('post_functions/account_list_2.csv') as csv_file:
     csv_reader = csv.reader(csv_file, delimiter=',')
     line_count = 0
     collection = connection.vendors_col
@@ -11,14 +11,20 @@ with open('account_list.csv') as csv_file:
     "property_id":[],
     "vendor_name": "Central Arkansas Water",
     "type": "Water",
-    "login0": {
-        "username": "invoices@wehnermultifamily.com",
-        "password": "water2021",
+    "login1": {
+        "username": "timbers@wehnermultifamily.com",
+        "password": "Water*999",
         "accounts": [],
         }
     }
+    document = {"login1": {
+                    "username": "timbers@wehnermultifamily.com",
+                    "password": "Water*999",
+                    "accounts": [],
+            }}
     
     for i in csv_reader:
-        vendors_document['login0']['accounts'].append(i[0])
+        document['login1']['accounts'].append(i[0])
     
-    collection.insert_one(vendors_document)
+    #collection.insert_one(vendors_document)
+    collection.update_one({"vendor_name": "Central Arkansas Water"}, {"$set": document})
