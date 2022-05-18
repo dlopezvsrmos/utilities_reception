@@ -5,10 +5,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from webdriver_manager.chrome import ChromeDriverManager
 import os
-import shutil
-import boto3
 from dotenv import load_dotenv
-from post_functions import db_structure as connection
 
 
 chrome_options = webdriver.ChromeOptions()
