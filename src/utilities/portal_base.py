@@ -9,7 +9,7 @@ from datetime import date
 
 class PortalBase:
 
-    def __init__(self):
+    def __init__(self, property_id, vendor_id, portal_user_id, portal_password_id, portal_submit_id):
         self.chrome_options = Options()
         #self.chrome_options.add_argument("--headless")
         self.chrome_options = webdriver.ChromeOptions()
@@ -26,21 +26,30 @@ class PortalBase:
         self.driver = webdriver.Chrome(
             ChromeDriverManager().install(), chrome_options=self.chrome_options)
 
-    def execute(self, vendor_id):
-        cursor.execute(f"SELECT id,	provider_name, e_bill_login_url FROM utility_providers WHERE id = '{vendor_id}'")
+        self.vendor_id = vendor_id
+        self.property_id = property_id
+        self.portal_user_id = portal_user_id
+        self.portal_password_id = portal_password_id
+        self.portal_submit_id = portal_submit_id
+
+    def execute(self):
+        ...
+    
+    def login_link(self):
+        cursor.execute(f"SELECT id,	provider_name, e_bill_login_url FROM utility_providers WHERE id = '{self.vendor_id}'")
         information = cursor.fetchone()
         return information
 
-    def login(self, vendor_id, property_id, portal_user_id, portal_password_id, portal_submit_id):
-        login_link = self.execute(vendor_id)[2]
+    def login(self):
+        login_link = self.login_link()[2]
         self.driver.get(login_link)
-        cursor.execute(f"SELECT e_bill_username,e_bill_password	FROM utility_accounts WHERE property = '{property_id}' AND utility_provider = '{vendor_id}'")
+        cursor.execute(f"SELECT e_bill_username,e_bill_password	FROM utility_accounts WHERE property = '{self.property_id}' AND utility_provider = '{self.vendor_id}'")
         credentials = cursor.fetchone()
         user = credentials[0]
         password = credentials[1]
-        self.driver.find_element(By.ID, portal_user_id).send_keys(user)
-        self.driver.find_element(By.ID, portal_password_id).send_keys(password)
-        self.driver.find_element(By.ID, portal_submit_id).click()
+        self.driver.find_element(By.ID, self.portal_user_id).send_keys(user)
+        self.driver.find_element(By.ID, self.portal_password_id).send_keys(password)
+        self.driver.find_element(By.ID, self.portal_submit_id).click()
 
     def save_file(self, property_abbreviation, invoice_number, account_number):
         file_downloaded = os.listdir(self.path)
